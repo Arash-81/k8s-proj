@@ -1,0 +1,3 @@
+manifests/te.yaml
+manifests/myregistry-secret.yaml
+manifests/postgres-secret.yaml

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-deployment
+  template:
+    metadata:
+      labels:
+        app: ping-deployment
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      tolerations:
+        - operator: "Exists"
+          effect: "NoSchedule"           
+      containers:
+      - name: ping-bash
+        image: docker.io/arashgh/ping-bashp:v1
+        envFrom:
+        - secretRef:
+            name: postgres-secret
+        - configMapRef:
+            name: postgres-config
+        volumeMounts:
+          - name: config-volume
+            mountPath: /my-domain
+        resources:
+          limits:
+            cpu: 200m  
+            memory: 256Mi  
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      imagePullSecrets:
+      - name: regsecret
+      volumes:
+        - name: config-volume
+          configMap:
+            name: ping-urls

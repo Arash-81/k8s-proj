@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  POSTGRES_DB: network
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: "5432"
